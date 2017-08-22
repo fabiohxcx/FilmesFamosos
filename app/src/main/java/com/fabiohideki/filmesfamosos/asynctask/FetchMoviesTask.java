@@ -1,10 +1,9 @@
 package com.fabiohideki.filmesfamosos.asynctask;
 
 import android.os.AsyncTask;
-import android.widget.TextView;
+import android.util.Log;
 
 import com.fabiohideki.filmesfamosos.MainActivity;
-import com.fabiohideki.filmesfamosos.R;
 import com.fabiohideki.filmesfamosos.model.ResultMovies;
 import com.fabiohideki.filmesfamosos.utils.MoviesJsonUtils;
 import com.fabiohideki.filmesfamosos.utils.NetworkUtils;
@@ -14,10 +13,13 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.net.URL;
 
-public class FetchMoviesTask extends AsyncTask<URL, Void, String> {
+public class FetchMoviesTask extends AsyncTask<URL, Void, ResultMovies> {
+
+    private static final String TAG = "FetchMoviesTask";
 
     private final MainActivity activity;
-    private TextView resultsTextView;
+    //private TextView resultsTextView;
+    //private ImageView imTeste;
 
 
     public FetchMoviesTask(MainActivity activity) {
@@ -28,13 +30,14 @@ public class FetchMoviesTask extends AsyncTask<URL, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
 
-        resultsTextView = (TextView) activity.findViewById(R.id.tv_test);
+        //resultsTextView = (TextView) activity.findViewById(R.id.tv_test);
+        //imTeste = (ImageView) activity.findViewById(R.id.iv_teste);
 
         activity.showProgressBar(true);
     }
 
     @Override
-    protected String doInBackground(URL... params) {
+    protected ResultMovies doInBackground(URL... params) {
 
         if (params.length == 0) {
             return null;
@@ -42,7 +45,7 @@ public class FetchMoviesTask extends AsyncTask<URL, Void, String> {
 
         URL urlString = params[0];
         String jsonMoviesResult = null;
-        ResultMovies resultMovies = new ResultMovies();
+        ResultMovies resultMovies = null;
 
         try {
             jsonMoviesResult = NetworkUtils.getResponseFromHttpUrl(urlString);
@@ -58,24 +61,18 @@ public class FetchMoviesTask extends AsyncTask<URL, Void, String> {
             }
         }
 
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (int i = 0; i < resultMovies.getMovies().size(); i++) {
-            stringBuilder.append(resultMovies.getMovies().get(i).getTitle());
-            stringBuilder.append("\r\n");
-        }
-
-
-        return stringBuilder.toString();
+        return resultMovies;
     }
 
     @Override
-    protected void onPostExecute(String moviesResult) {
+    protected void onPostExecute(ResultMovies resultMovies) {
         activity.showProgressBar(false);
 
-        if (moviesResult != null && !moviesResult.equals("")) {
+        if (resultMovies != null) {
             activity.showMoviesData();
-            resultsTextView.setText(moviesResult);
+            activity.setGridViewAdapter(resultMovies);
+
+            Log.i(TAG, "onPostExecute: " + "http://image.tmdb.org/t/p/" + "w780" + resultMovies.getMovies().get(0).getPosterPath());
         } else {
             activity.showErrorMessage();
         }

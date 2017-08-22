@@ -12,7 +12,6 @@ import java.net.URL;
 import java.util.Scanner;
 
 public class NetworkUtils {
-    //http://api.themoviedb.org/3/movie/popular?api_key=d40dbb8726d34c6ec5244795f0a169f9
 
     private final static String TAG = "NetworkUtils";
 
