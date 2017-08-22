@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Filmes Famosos</string>
+    <string name="iv_movie">Movie Image</string>
+    <string name="error_message">Error, please check your internet connectivity</string>
 </resources>
