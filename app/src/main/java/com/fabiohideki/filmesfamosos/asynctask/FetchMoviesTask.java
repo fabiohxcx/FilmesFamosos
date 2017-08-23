@@ -17,9 +17,6 @@ public class FetchMoviesTask extends AsyncTask<URL, Void, ResultMovies> {
     private static final String TAG = "FetchMoviesTask";
 
     private final MainActivity activity;
-    //private TextView resultsTextView;
-    //private ImageView imTeste;
-
 
     public FetchMoviesTask(MainActivity activity) {
         this.activity = activity;
@@ -28,9 +25,6 @@ public class FetchMoviesTask extends AsyncTask<URL, Void, ResultMovies> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-
-        //resultsTextView = (TextView) activity.findViewById(R.id.tv_test);
-        //imTeste = (ImageView) activity.findViewById(R.id.iv_teste);
 
         activity.showProgressBar(true);
     }

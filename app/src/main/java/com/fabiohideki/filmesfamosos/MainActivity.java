@@ -1,6 +1,7 @@
 package com.fabiohideki.filmesfamosos;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,9 +11,9 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fabiohideki.filmesfamosos.adapters.GridRecyclerViewAdapter;
@@ -23,11 +24,15 @@ import com.fabiohideki.filmesfamosos.utils.NetworkUtils;
 
 import java.net.URL;
 
+import io.github.kobakei.materialfabspeeddial.FabSpeedDial;
+
+import static com.fabiohideki.filmesfamosos.R.string.most_popular;
+
 public class MainActivity extends AppCompatActivity implements GridRecyclerViewAdapter.ItemClickListener {
     private static final String TAG = "MainActivity";
 
     private Toolbar mToolbar;
-    private ImageButton mFabButton;
+    private FabSpeedDial mFabButton;
 
     private LinearLayout displayErrorView;
     private ProgressBar progressBar;
@@ -43,11 +48,31 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initToolbar();
-        mFabButton = (ImageButton) findViewById(R.id.fabButton);
-        mFabButton.setOnClickListener(new View.OnClickListener() {
+
+        mFabButton = (FabSpeedDial) findViewById(R.id.fabButton);
+
+        mFabButton.addOnMenuItemClickListener(new FabSpeedDial.OnMenuItemClickListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "fab", Toast.LENGTH_SHORT).show();
+            public void onMenuItemClick(FloatingActionButton fab, TextView textView, int itemId) {
+                if (itemId == R.id.top_rated) {
+                    setTitle(getString(R.string.top_rated));
+                    resourcePath = NetworkUtils.TOP_RATED;
+                    loadMoviesData(resourcePath);
+
+                } else if (itemId == R.id.most_popular) {
+                    setTitle(getString(most_popular));
+                    resourcePath = NetworkUtils.POPULAR;
+                    loadMoviesData(resourcePath);
+                }
+            }
+        });
+
+        mFabButton.addOnStateChangeListener(new FabSpeedDial.OnStateChangeListener() {
+            @Override
+            public void onStateChange(boolean open) {
+                if (open) {
+
+                }
             }
         });
 
@@ -56,17 +81,15 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
         displayErrorView = (LinearLayout) findViewById(R.id.error_layout);
         progressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
-        //ImageView imageView = (ImageView) findViewById(R.id.iv_example);
-        //Picasso.with(this).load("http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(imageView);
-
         loadMoviesData(resourcePath);
 
     }
 
+
     private void initToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        setTitle(getString(R.string.app_name));
+        setTitle(getString(R.string.top_rated));
         mToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
     }
 
@@ -136,15 +159,8 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
         this.resourcePath = resourcePath;
     }
 
-/*    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add("Item name");
-        menu.add("dsadasds");
-        return super.onCreateOptionsMenu(menu);
-    }*/
-
     @Override
-    public void onItemClick(String title) {
+    public void onItemPosterClick(String title) {
         Toast.makeText(this, title, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onItemClick: " + title);
     }

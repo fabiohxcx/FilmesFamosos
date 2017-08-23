@@ -3,4 +3,6 @@
     <string name="iv_movie">Movie Image</string>
     <string name="error_message">Check yout internet connection and try again</string>
     <string name="retry">Retry</string>
+    <string name="most_popular">Most popular</string>
+    <string name="top_rated">Top rated</string>
 </resources>
