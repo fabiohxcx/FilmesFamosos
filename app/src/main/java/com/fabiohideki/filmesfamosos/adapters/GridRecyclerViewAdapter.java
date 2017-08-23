@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.fabiohideki.filmesfamosos.R;
 import com.fabiohideki.filmesfamosos.model.Movie;
+import com.fabiohideki.filmesfamosos.utils.MovieUrlUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<GridRecyclerVi
 
         int height = parent.getMeasuredHeight() / 2;
         int width = parent.getMeasuredWidth() / 2;
+
         view.setLayoutParams(new RecyclerView.LayoutParams(width, height));
 
         return new ViewHolder(view);
@@ -46,7 +48,7 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<GridRecyclerVi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Movie movie = movies.get(position);
-        Picasso.with(context).load("http://image.tmdb.org/t/p/" + "w500" + movie.getPosterPath()).into(holder.posterImage);
+        Picasso.with(context).load(MovieUrlUtils.buildUrlPoster(movie.getPosterPath())).into(holder.posterImage);
     }
 
     @Override

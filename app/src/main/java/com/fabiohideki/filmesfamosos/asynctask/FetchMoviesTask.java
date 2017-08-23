@@ -1,7 +1,6 @@
 package com.fabiohideki.filmesfamosos.asynctask;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.fabiohideki.filmesfamosos.MainActivity;
 import com.fabiohideki.filmesfamosos.model.ResultMovies;
@@ -72,7 +71,6 @@ public class FetchMoviesTask extends AsyncTask<URL, Void, ResultMovies> {
             activity.showMoviesData();
             activity.setGridViewAdapter(resultMovies);
 
-            Log.i(TAG, "onPostExecute: " + "http://image.tmdb.org/t/p/" + "w780" + resultMovies.getMovies().get(0).getPosterPath());
         } else {
             activity.showErrorMessage();
         }
