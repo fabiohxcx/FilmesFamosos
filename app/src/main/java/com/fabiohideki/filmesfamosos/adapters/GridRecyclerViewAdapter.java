@@ -67,7 +67,7 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<GridRecyclerVi
 
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
-        void onItemPosterClick(String title);
+        void onItemPosterClick(Movie movie);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -82,7 +82,7 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<GridRecyclerVi
         @Override
         public void onClick(View view) {
             if (mClickListener != null)
-                mClickListener.onItemPosterClick(movies.get(getAdapterPosition()).getTitle());
+                mClickListener.onItemPosterClick(movies.get(getAdapterPosition()));
         }
     }
 

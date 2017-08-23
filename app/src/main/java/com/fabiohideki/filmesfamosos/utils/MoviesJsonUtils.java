@@ -35,7 +35,6 @@ public class MoviesJsonUtils {
 
     public static ResultMovies getResultMovieFromJson(Context context, String jsonMoviesResult) throws JSONException {
 
-
         ResultMovies resultMovies = new ResultMovies();
 
         JSONObject resultJson = new JSONObject(jsonMoviesResult);
@@ -67,4 +66,5 @@ public class MoviesJsonUtils {
 
         return resultMovies;
     }
+
 }

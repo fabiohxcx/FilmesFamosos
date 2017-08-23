@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Filmes Famosos</string>
+    <string name="app_name">Popular Movies</string>
     <string name="iv_movie">Movie Image</string>
     <string name="error_message">Check yout internet connection and try again</string>
     <string name="retry">Retry</string>

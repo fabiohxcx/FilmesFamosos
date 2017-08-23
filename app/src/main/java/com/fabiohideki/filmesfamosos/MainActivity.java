@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.fabiohideki.filmesfamosos.adapters.GridRecyclerViewAdapter;
 import com.fabiohideki.filmesfamosos.asynctask.FetchMoviesTask;
 import com.fabiohideki.filmesfamosos.listener.HidingScrollListener;
+import com.fabiohideki.filmesfamosos.model.Movie;
 import com.fabiohideki.filmesfamosos.model.ResultMovies;
 import com.fabiohideki.filmesfamosos.utils.NetworkUtils;
 
@@ -25,7 +26,9 @@ import java.net.URL;
 
 import io.github.kobakei.materialfabspeeddial.FabSpeedDial;
 
+import static com.fabiohideki.filmesfamosos.R.string.app_name;
 import static com.fabiohideki.filmesfamosos.R.string.most_popular;
+import static com.fabiohideki.filmesfamosos.R.string.top_rated;
 
 public class MainActivity extends AppCompatActivity implements GridRecyclerViewAdapter.ItemClickListener {
     private static final String TAG = "MainActivity";
@@ -43,6 +46,11 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
     private String resourcePath = NetworkUtils.TOP_RATED;
 
     @Override
+    public void setTitle(CharSequence title) {
+        super.setTitle(getString(app_name) + " - " + title);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -54,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
             @Override
             public void onMenuItemClick(FloatingActionButton fab, TextView textView, int itemId) {
                 if (itemId == R.id.top_rated) {
-                    setTitle(getString(R.string.top_rated));
+                    setTitle(getString(top_rated));
                     resourcePath = NetworkUtils.TOP_RATED;
                     loadMoviesData(resourcePath);
 
@@ -88,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
     private void initToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        setTitle(getString(R.string.top_rated));
+        setTitle(getString(top_rated));
         mToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
     }
 
@@ -159,9 +167,9 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
     }
 
     @Override
-    public void onItemPosterClick(String title) {
+    public void onItemPosterClick(Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
-        intent.putExtra(Intent.EXTRA_TEXT, title);
+        intent.putExtra(Intent.EXTRA_TEXT, movie.getTitle());
         startActivity(intent);
     }
 }
