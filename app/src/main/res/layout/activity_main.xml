@@ -6,10 +6,14 @@
     android:background="@color/primary_light"
     tools:context="com.fabiohideki.filmesfamosos.MainActivity">
 
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/main_grid_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingTop="?attr/actionBarSize"
         tools:context=".MainActivity">
 
 
@@ -50,6 +54,23 @@
         android:layout_height="42dp"
         android:layout_gravity="center"
         android:visibility="invisible" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary" />
+
+    <ImageButton
+        android:id="@+id/fabButton"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/fab_background"
+        android:contentDescription="@null"
+        android:src="@android:drawable/ic_menu_add" />
 
 
 </FrameLayout>
