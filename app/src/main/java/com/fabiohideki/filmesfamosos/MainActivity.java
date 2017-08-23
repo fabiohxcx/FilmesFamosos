@@ -1,12 +1,12 @@
 package com.fabiohideki.filmesfamosos;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -14,7 +14,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fabiohideki.filmesfamosos.adapters.GridRecyclerViewAdapter;
 import com.fabiohideki.filmesfamosos.asynctask.FetchMoviesTask;
@@ -161,7 +160,8 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
 
     @Override
     public void onItemPosterClick(String title) {
-        Toast.makeText(this, title, Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "onItemClick: " + title);
+        Intent intent = new Intent(this, MovieDetailActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, title);
+        startActivity(intent);
     }
 }
