@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
     @Override
     public void onItemPosterClick(Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
-        intent.putExtra(Intent.EXTRA_TEXT, movie.getTitle());
+        intent.putExtra(Intent.EXTRA_COMPONENT_NAME, movie);
         startActivity(intent);
     }
 }

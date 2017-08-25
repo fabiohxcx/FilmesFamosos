@@ -1,18 +1,32 @@
 package com.fabiohideki.filmesfamosos.model;
 
-public class Movie {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Movie implements Parcelable {
     private String posterPath;
     private String title;
     private String overview;
     private String voteAverage;
     private String releaseDate;
+    private String backdropPath;
 
-    public Movie(String posterPath, String title, String overview, String voteAverage, String releaseDate) {
+
+    public Movie(String posterPath, String title, String overview, String voteAverage, String releaseDate, String backdropPath) {
         this.posterPath = posterPath;
         this.title = title;
         this.overview = overview;
         this.voteAverage = voteAverage;
         this.releaseDate = releaseDate;
+        this.backdropPath = backdropPath;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
     }
 
     public String getPosterPath() {
@@ -54,4 +68,41 @@ public class Movie {
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
+
+    protected Movie(Parcel in) {
+        posterPath = in.readString();
+        title = in.readString();
+        overview = in.readString();
+        voteAverage = in.readString();
+        releaseDate = in.readString();
+        backdropPath = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(posterPath);
+        dest.writeString(title);
+        dest.writeString(overview);
+        dest.writeString(voteAverage);
+        dest.writeString(releaseDate);
+        dest.writeString(backdropPath);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }

@@ -32,6 +32,7 @@ public class MoviesJsonUtils {
     private static final String OVERVIEW = "overview";
     private static final String RELEASE_DATE = "release_date";
     private static final String VOTE_AVERAGE = "vote_average";
+    private static final String BACKDROP_PATH = "backdrop_path";
 
     public static ResultMovies getResultMovieFromJson(Context context, String jsonMoviesResult) throws JSONException {
 
@@ -56,7 +57,8 @@ public class MoviesJsonUtils {
                     movieJson.getString(TITLE),
                     movieJson.getString(OVERVIEW),
                     movieJson.getString(VOTE_AVERAGE),
-                    movieJson.getString(RELEASE_DATE)
+                    movieJson.getString(RELEASE_DATE),
+                    movieJson.getString(BACKDROP_PATH)
             );
 
             resultMoviesArray.add(movie);
