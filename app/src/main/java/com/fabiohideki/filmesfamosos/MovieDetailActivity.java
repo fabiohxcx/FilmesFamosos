@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -47,7 +48,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         tvMovieReleaseDate = (TextView) findViewById(R.id.tv_movie_release_date);
         tvMovieOverview = (TextView) findViewById(R.id.tv_movie_overview);
         rbMovie = (RatingBar) findViewById(R.id.rb_movie);
-        ivMoviePosterDetail = (ImageView) findViewById(R.id.iv_movie_poster_detail);
+        ivMoviePosterDetail = (ImageView) findViewById(R.id.poster_image);
         ivMovieToolBarPoster = (ImageView) findViewById(R.id.movie_toolbar_poster);
 
         tvMovieTitle.setText(movie.getTitle());
@@ -88,5 +89,16 @@ public class MovieDetailActivity extends AppCompatActivity {
         menu.add("Share").setIcon(getResources().getDrawable(R.drawable.share_variant));
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                supportFinishAfterTransition();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -53,12 +53,13 @@
 
 
                 <ImageView
-                    android:id="@+id/iv_movie_poster_detail"
+                    android:id="@+id/poster_image"
                     android:layout_width="150dp"
                     android:layout_height="230dp"
                     android:layout_margin="8dp"
                     android:background="@drawable/placeholder"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:transitionName="poster_transition" />
 
                 <RatingBar
                     android:id="@+id/rb_movie"

@@ -3,6 +3,7 @@ package com.fabiohideki.filmesfamosos;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -87,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
         gridRecyclerView = (RecyclerView) findViewById(R.id.main_grid_recycler);
         displayErrorView = (LinearLayout) findViewById(R.id.error_layout);
         progressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-
         loadMoviesData(resourcePath);
 
     }
@@ -167,9 +167,11 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
     }
 
     @Override
-    public void onItemPosterClick(Movie movie) {
+    public void onItemPosterClick(View view, Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra(Intent.EXTRA_COMPONENT_NAME, movie);
-        startActivity(intent);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, view, "poster_transition");
+        startActivity(intent, options.toBundle());
     }
 }
