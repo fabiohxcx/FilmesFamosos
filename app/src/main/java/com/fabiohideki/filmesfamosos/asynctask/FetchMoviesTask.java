@@ -14,8 +14,6 @@ import java.net.URL;
 
 public class FetchMoviesTask extends AsyncTask<URL, Void, ResultMovies> {
 
-    private static final String TAG = "FetchMoviesTask";
-
     private final MainActivity activity;
 
     public FetchMoviesTask(MainActivity activity) {

@@ -49,7 +49,7 @@ public class ResultMovies {
         if (movies != null) {
             this.movies = movies;
         } else {
-            movies = new ArrayList<>();
+            this.movies = new ArrayList<>();
         }
     }
 }

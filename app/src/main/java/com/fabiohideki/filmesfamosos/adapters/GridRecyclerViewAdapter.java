@@ -45,7 +45,7 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<GridRecyclerVi
             actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
         }
 
-        int height = (int) ((parent.getMeasuredHeight() - actionBarHeight) / 2);
+        int height = ((parent.getMeasuredHeight() - actionBarHeight) / 2);
 
         int widthDivider = 400;
         int width = parent.getMeasuredWidth();

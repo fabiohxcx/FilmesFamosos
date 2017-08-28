@@ -27,7 +27,8 @@
                 android:id="@+id/movie_toolbar_poster"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/toolbar_poster_description"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

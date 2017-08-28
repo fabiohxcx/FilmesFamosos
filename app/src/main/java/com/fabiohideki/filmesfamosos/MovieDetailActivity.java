@@ -2,12 +2,13 @@ package com.fabiohideki.filmesfamosos;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,10 +22,7 @@ import com.squareup.picasso.Picasso;
 public class MovieDetailActivity extends AppCompatActivity {
 
     private FloatingActionButton fab;
-    private CollapsingToolbarLayout collapsingToolbarLayout;
-
     private Movie movie;
-
     private TextView tvMovieTitle;
     private TextView tvMovieReleaseDate;
     private TextView tvMovieOverview;
@@ -63,6 +61,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         fab = (FloatingActionButton) findViewById(R.id.fab_mark);
         fab.setOnClickListener(new View.OnClickListener() {
 
+            @SuppressWarnings("deprecation")
             @Override
             public void onClick(View view) {
                 //action fab
@@ -78,6 +77,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                         }).show();
             }
         });
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
@@ -86,7 +86,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        menu.add("Share").setIcon(getResources().getDrawable(R.drawable.share_variant));
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_movie_detail, menu);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -97,6 +98,13 @@ public class MovieDetailActivity extends AppCompatActivity {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 supportFinishAfterTransition();
+                return true;
+            case R.id.menu_share:
+                Intent shareIntent = ShareCompat.IntentBuilder.from(this)
+                        .setType("text/plain")
+                        .setText(getString(R.string.watch_movie) + ": " + movie.getTitle() + " (" + movie.getReleaseDate().split("-")[0] + ")")
+                        .getIntent();
+                startActivity(shareIntent);
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -33,7 +33,6 @@ import static com.fabiohideki.filmesfamosos.R.string.most_popular;
 import static com.fabiohideki.filmesfamosos.R.string.top_rated;
 
 public class MainActivity extends AppCompatActivity implements GridRecyclerViewAdapter.ItemClickListener {
-    private static final String TAG = "MainActivity";
 
     private Toolbar mToolbar;
     private FabSpeedDial mFabButton;
@@ -41,16 +40,9 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
     private LinearLayout displayErrorView;
     private ProgressBar progressBar;
 
-    private GridRecyclerViewAdapter gridRecyclerViewAdapter;
-
     private RecyclerView gridRecyclerView;
 
     private String resourcePath;
-
-    @Override
-    public void setTitle(CharSequence title) {
-        super.setTitle(getString(app_name) + " - " + title);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +50,10 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
         setContentView(R.layout.activity_main);
         initToolbar();
 
+        //finds
+        gridRecyclerView = (RecyclerView) findViewById(R.id.main_grid_recycler);
+        displayErrorView = (LinearLayout) findViewById(R.id.error_layout);
+        progressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
         mFabButton = (FabSpeedDial) findViewById(R.id.fabButton);
 
         mFabButton.addOnMenuItemClickListener(new FabSpeedDial.OnMenuItemClickListener() {
@@ -76,29 +72,23 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
             }
         });
 
-        mFabButton.addOnStateChangeListener(new FabSpeedDial.OnStateChangeListener() {
-            @Override
-            public void onStateChange(boolean open) {
-                if (open) {
 
-                }
-            }
-        });
-
-        //finds
-        gridRecyclerView = (RecyclerView) findViewById(R.id.main_grid_recycler);
-        displayErrorView = (LinearLayout) findViewById(R.id.error_layout);
-        progressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
         resourcePath = NetworkUtils.TOP_RATED;
         loadMoviesData(resourcePath);
 
     }
 
+    @SuppressWarnings("deprecation")
     private void initToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         setTitle(getString(top_rated));
         mToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        super.setTitle(getString(app_name) + " - " + title);
     }
 
     private void loadMoviesData(String resourcePath) {
@@ -128,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
         gridRecyclerView.setVisibility(View.INVISIBLE);
     }
 
+    @SuppressWarnings("deprecation")
     public void setGridViewAdapter(ResultMovies resultMovies) {
         GridLayoutManager layoutManager = new GridLayoutManager(this, numberOfColumns());
         gridRecyclerView.setLayoutManager(layoutManager);
@@ -144,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
             }
         });
 
-        gridRecyclerViewAdapter = new GridRecyclerViewAdapter(this, resultMovies.getMovies());
+        GridRecyclerViewAdapter gridRecyclerViewAdapter = new GridRecyclerViewAdapter(this, resultMovies.getMovies());
         gridRecyclerViewAdapter.setClickListener(this);
         gridRecyclerView.setAdapter(gridRecyclerViewAdapter);
     }
@@ -174,10 +165,6 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
         mFabButton.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
     }
 
-
-    public void setResourcePath(String resourcePath) {
-        this.resourcePath = resourcePath;
-    }
 
     @Override
     public void onItemPosterClick(View view, Movie movie) {
