@@ -46,7 +46,16 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<GridRecyclerVi
         }
 
         int height = (int) ((parent.getMeasuredHeight() - actionBarHeight) / 2);
-        int width = parent.getMeasuredWidth() / 2;
+
+        int widthDivider = 400;
+        int width = parent.getMeasuredWidth();
+
+        int nColumns = width / widthDivider;
+        if (nColumns < 2) {
+            nColumns = 2;
+        }
+
+        width = parent.getMeasuredWidth() / nColumns;
 
         view.setLayoutParams(new RecyclerView.LayoutParams(width, height));
 

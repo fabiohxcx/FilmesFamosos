@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
 
     private RecyclerView gridRecyclerView;
 
-    private String resourcePath = NetworkUtils.TOP_RATED;
+    private String resourcePath;
 
     @Override
     public void setTitle(CharSequence title) {
@@ -88,10 +89,10 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
         gridRecyclerView = (RecyclerView) findViewById(R.id.main_grid_recycler);
         displayErrorView = (LinearLayout) findViewById(R.id.error_layout);
         progressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+        resourcePath = NetworkUtils.TOP_RATED;
         loadMoviesData(resourcePath);
 
     }
-
 
     private void initToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
     }
 
     public void setGridViewAdapter(ResultMovies resultMovies) {
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, numberOfColumns());
         gridRecyclerView.setLayoutManager(layoutManager);
         gridRecyclerView.setHasFixedSize(true);
         gridRecyclerView.setOnScrollListener(new HidingScrollListener() {
@@ -146,6 +147,18 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
         gridRecyclerViewAdapter = new GridRecyclerViewAdapter(this, resultMovies.getMovies());
         gridRecyclerViewAdapter.setClickListener(this);
         gridRecyclerView.setAdapter(gridRecyclerViewAdapter);
+    }
+
+    private int numberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        // You can change this divider to adjust the size of the poster
+        int widthDivider = 400;
+        int width = displayMetrics.widthPixels;
+        int nColumns = width / widthDivider;
+        if (nColumns < 2) return 2;
+        return nColumns;
     }
 
     private void hideViews() {
