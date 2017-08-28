@@ -10,7 +10,7 @@
         android:layout_gravity="center"
         android:background="@drawable/placeholder"
         android:contentDescription="@string/placeholder"
-        android:scaleType="centerCrop" />
+        android:scaleType="fitXY" />
 
 
     <ImageView
