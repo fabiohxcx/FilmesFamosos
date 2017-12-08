@@ -19,6 +19,8 @@ public class NetworkUtils {
     private static final String VERSION = "3";
     private static final String PAGE = "page";
     private static final String MOVIE = "movie";
+    private static final String VIDEOS = "videos";
+    private static final String REVIEWS = "reviews";
     public static final String POPULAR = "popular";
     public static final String TOP_RATED = "top_rated";
 
@@ -51,6 +53,53 @@ public class NetworkUtils {
 
         return url;
 
+    }
+
+    public static URL buildUrlTrailers(String id, String apiKey) {
+        Uri builtUri;
+        URL url = null;
+
+        builtUri = Uri.parse(THEMOVIEDB_BASE_URL).buildUpon().
+                appendPath(VERSION)
+                .appendPath(MOVIE)
+                .appendPath(id)
+                .appendPath(VIDEOS)
+                .appendQueryParameter(PARAM_API_KEY, apiKey)
+                .build();
+
+        try {
+            url = new URL(builtUri.toString());
+            Log.i(TAG, "buildUrl: " + url.toString());
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    public static URL buildUrlReviews(String id, String apiKey) {
+        Uri builtUri;
+        URL url = null;
+
+        builtUri = Uri.parse(THEMOVIEDB_BASE_URL).buildUpon().
+                appendPath(VERSION)
+                .appendPath(MOVIE)
+                .appendPath(id)
+                .appendPath(REVIEWS)
+                .appendQueryParameter(PARAM_API_KEY, apiKey)
+                .build();
+
+        try {
+            url = new URL(builtUri.toString());
+            Log.i(TAG, "buildUrl: " + url.toString());
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+
+        return url;
     }
 
     @Nullable

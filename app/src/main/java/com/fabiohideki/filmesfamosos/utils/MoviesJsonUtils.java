@@ -27,6 +27,7 @@ public class MoviesJsonUtils {
     private static final String RESULTS = "results";
 
     //array
+    private static final String ID = "id";
     private static final String POSTER_PATH = "poster_path";
     private static final String TITLE = "title";
     private static final String OVERVIEW = "overview";
@@ -53,6 +54,7 @@ public class MoviesJsonUtils {
         for (int i = 0; i < resultMoviesJson.length(); i++) {
             JSONObject movieJson = resultMoviesJson.getJSONObject(i);
             Movie movie = new Movie(
+                    movieJson.getString(ID),
                     movieJson.getString(POSTER_PATH),
                     movieJson.getString(TITLE),
                     movieJson.getString(OVERVIEW),

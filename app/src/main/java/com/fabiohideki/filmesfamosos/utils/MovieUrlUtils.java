@@ -21,7 +21,7 @@ public class MovieUrlUtils {
     public static final String IMG_SIZE_ORIGINAL = "original";
 
     public static String buildUrlPoster(String posterPath) {
-        Log.i("urlPoster", "buildUrlPoster: posterPath" + posterPath);
+        Log.i("url", "buildUrlPoster: posterPath" + posterPath);
         Uri builtUri = Uri.parse(URL_BASE).buildUpon().
                 appendPath(IMG_SIZE_W500)
                 .build();
@@ -30,7 +30,7 @@ public class MovieUrlUtils {
         try {
 
             url = new URL(builtUri.toString());
-            Log.i("urlPoster", "buildUrlPoster: " + url.toString());
+            Log.i("url", "buildUrlPoster: " + url.toString());
 
             return url.toString() + posterPath;
         } catch (MalformedURLException e) {
@@ -39,6 +39,5 @@ public class MovieUrlUtils {
 
         return "";
     }
-
 
 }
