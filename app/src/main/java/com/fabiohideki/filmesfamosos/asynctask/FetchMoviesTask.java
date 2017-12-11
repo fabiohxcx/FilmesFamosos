@@ -1,6 +1,7 @@
 package com.fabiohideki.filmesfamosos.asynctask;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.fabiohideki.filmesfamosos.MainActivity;
 import com.fabiohideki.filmesfamosos.model.ResultMovies;
@@ -34,6 +35,8 @@ public class FetchMoviesTask extends AsyncTask<URL, Void, ResultMovies> {
     @Override
     protected ResultMovies doInBackground(URL... params) {
 
+        Log.d("FetchMoviesTask", "doInBackground: ");
+
         if (params.length == 0) {
             return null;
         }
@@ -42,6 +45,8 @@ public class FetchMoviesTask extends AsyncTask<URL, Void, ResultMovies> {
         String jsonMoviesResult = null;
 
         if (resultMovies == null && !savedInstance) {
+
+            Log.d("FetchMoviesTask", "without savedInstance");
 
             try {
                 jsonMoviesResult = NetworkUtils.getResponseFromHttpUrl(urlString);
@@ -73,6 +78,6 @@ public class FetchMoviesTask extends AsyncTask<URL, Void, ResultMovies> {
         } else {
             activity.showErrorMessage();
         }
-        
+
     }
 }

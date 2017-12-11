@@ -67,6 +67,7 @@
         android:layout_gravity="bottom|right"
         app:fab_fabBackgroundColor="@color/colorAccent"
         app:fab_fabDrawable="@drawable/filter_variant"
+        app:fab_fabRotationAngle="90.0"
         app:fab_menu="@menu/menu_fab"
         app:fab_miniFabBackgroundColor="@color/secondary_text"
         app:fab_miniFabTextColor="@color/primary_light" />
