@@ -156,7 +156,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 String text = tvMovieTrailersUrl.getText() + "\n\n" + jsonTrailersResult;
                 tvMovieTrailersUrl.setText(text);
             }
-            
+
         }
     }
 

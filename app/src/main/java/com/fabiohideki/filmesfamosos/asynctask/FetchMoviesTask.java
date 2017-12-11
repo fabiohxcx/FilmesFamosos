@@ -15,9 +15,13 @@ import java.net.URL;
 public class FetchMoviesTask extends AsyncTask<URL, Void, ResultMovies> {
 
     private final MainActivity activity;
+    private ResultMovies resultMovies = null;
+    private boolean savedInstance;
 
-    public FetchMoviesTask(MainActivity activity) {
+    public FetchMoviesTask(MainActivity activity, ResultMovies resultMovies, boolean savedInstance) {
         this.activity = activity;
+        this.resultMovies = resultMovies;
+        this.savedInstance = savedInstance;
     }
 
     @Override
@@ -36,19 +40,22 @@ public class FetchMoviesTask extends AsyncTask<URL, Void, ResultMovies> {
 
         URL urlString = params[0];
         String jsonMoviesResult = null;
-        ResultMovies resultMovies = null;
 
-        try {
-            jsonMoviesResult = NetworkUtils.getResponseFromHttpUrl(urlString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        if (resultMovies == null && !savedInstance) {
 
-        if (jsonMoviesResult != null && !("").equals(jsonMoviesResult)) {
             try {
-                resultMovies = MoviesJsonUtils.getResultMovieFromJson(activity, jsonMoviesResult);
-            } catch (JSONException e) {
+                jsonMoviesResult = NetworkUtils.getResponseFromHttpUrl(urlString);
+            } catch (IOException e) {
                 e.printStackTrace();
+            }
+
+            if (jsonMoviesResult != null && !("").equals(jsonMoviesResult)) {
+                try {
+                    resultMovies = MoviesJsonUtils.getResultMovieFromJson(activity, jsonMoviesResult);
+                    MainActivity.setResultMovies(resultMovies);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -66,5 +73,6 @@ public class FetchMoviesTask extends AsyncTask<URL, Void, ResultMovies> {
         } else {
             activity.showErrorMessage();
         }
+        
     }
 }

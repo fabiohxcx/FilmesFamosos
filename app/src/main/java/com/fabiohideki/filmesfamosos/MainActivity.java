@@ -42,7 +42,28 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
 
     private RecyclerView gridRecyclerView;
 
+    //salvar
     private String resourcePath;
+    private static final String ON_SAVE_INSTANCE_STATE_MOVIES = "onSaveInstanceStateMovies";
+    private static final String ON_SAVE_INSTANCE_STATE_RESOURCE = "onSaveInstanceStateResource";
+    private static ResultMovies resultMovies;
+
+
+    public static void setResultMovies(ResultMovies resultMoviesParam) {
+        resultMovies = resultMoviesParam;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (resourcePath != null) {
+            outState.putString(ON_SAVE_INSTANCE_STATE_RESOURCE, resourcePath);
+        }
+
+        if (resultMovies != null) {
+            outState.putParcelable(ON_SAVE_INSTANCE_STATE_MOVIES, resultMovies);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,19 +83,33 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
                 if (itemId == R.id.top_rated) {
                     setTitle(getString(top_rated));
                     resourcePath = NetworkUtils.TOP_RATED;
-                    loadMoviesData(resourcePath);
+                    loadMoviesData(resourcePath, null, false);
 
                 } else if (itemId == R.id.most_popular) {
                     setTitle(getString(most_popular));
                     resourcePath = NetworkUtils.POPULAR;
-                    loadMoviesData(resourcePath);
+                    loadMoviesData(resourcePath, null, false);
                 }
             }
         });
 
+        if (savedInstanceState != null) {
+            resultMovies = savedInstanceState.getParcelable(ON_SAVE_INSTANCE_STATE_MOVIES);
+            resourcePath = savedInstanceState.getString(ON_SAVE_INSTANCE_STATE_RESOURCE);
 
-        resourcePath = NetworkUtils.TOP_RATED;
-        loadMoviesData(resourcePath);
+            if (resourcePath != null && resourcePath == NetworkUtils.TOP_RATED) {
+                setTitle(getString(top_rated));
+            } else if (resourcePath != null && resourcePath == NetworkUtils.POPULAR) {
+                setTitle(getString(most_popular));
+            }
+
+            loadMoviesData(resourcePath, resultMovies, true);
+
+        } else {
+            resourcePath = NetworkUtils.TOP_RATED;
+            loadMoviesData(resourcePath, null, false);
+        }
+
 
     }
 
@@ -91,17 +126,17 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
         super.setTitle(getString(app_name) + " - " + title);
     }
 
-    private void loadMoviesData(String resourcePath) {
+    private void loadMoviesData(String resourcePath, ResultMovies resultMovies, boolean savedInstance) {
         showMoviesData();
 
         URL urlTheMovieDB = NetworkUtils.buildUrlMovie(resourcePath, getString(R.string.movie_db_api_key), null);
         if (urlTheMovieDB != null) {
-            new FetchMoviesTask(this).execute(urlTheMovieDB);
+            new FetchMoviesTask(this, resultMovies, savedInstance).execute(urlTheMovieDB);
         }
     }
 
     public void retryFetch(View view) {
-        loadMoviesData(resourcePath);
+        loadMoviesData(resourcePath, null, false);
     }
 
     public void showMoviesData() {
