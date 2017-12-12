@@ -3,6 +3,8 @@ package com.fabiohideki.filmesfamosos.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 public class Movie implements Parcelable {
     private String id;
     private String posterPath;
@@ -11,7 +13,8 @@ public class Movie implements Parcelable {
     private String voteAverage;
     private String releaseDate;
     private String backdropPath;
-
+    private List<String> trailers;
+    private List<Review> reviews;
 
     public Movie(String id, String posterPath, String title, String overview, String voteAverage, String releaseDate, String backdropPath) {
         this.id = id;
@@ -22,6 +25,23 @@ public class Movie implements Parcelable {
         this.releaseDate = releaseDate;
         this.backdropPath = backdropPath;
     }
+
+    public List<String> getTrailers() {
+        return trailers;
+    }
+
+    public void setTrailers(List<String> trailers) {
+        this.trailers = trailers;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
 
     public String getId() {
         return id;

@@ -5,10 +5,15 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -28,9 +33,13 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MovieDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
 
+    private static final String SEARCH_QUERY_URL_EXTRA = "query";
+    private static final int MOVIE_DETAIL_LOADER = 22;
     private FloatingActionButton fab;
     private Movie movie;
     private TextView tvMovieTitle;
@@ -41,14 +50,12 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     private RatingBar rbMovie;
     private ImageView ivMoviePosterDetail;
     private ImageView ivMovieToolBarPoster;
-
     private String trailers;
-
-    private static final String SEARCH_QUERY_URL_EXTRA = "query";
-    private static final int MOVIE_DETAIL_LOADER = 22;
-
     private Bundle queryBundle = null;
 
+    //tabs
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +72,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         tvMovieID = (TextView) findViewById(R.id.tv_movie_id);
         tvMovieReleaseDate = (TextView) findViewById(R.id.tv_movie_release_date);
         tvMovieOverview = (TextView) findViewById(R.id.tv_movie_overview);
-        tvMovieTrailersUrl = findViewById(R.id.tv_movie_trailers_url);
+        //tvMovieTrailersUrl = findViewById(R.id.tv_movie_trailers_url);
         rbMovie = (RatingBar) findViewById(R.id.rb_movie);
         ivMoviePosterDetail = (ImageView) findViewById(R.id.poster_image);
         ivMovieToolBarPoster = (ImageView) findViewById(R.id.movie_toolbar_poster);
@@ -82,7 +89,8 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
 
         //Trailers
         URL urlTrailers = NetworkUtils.buildUrlTrailers(movie.getId(), getString(R.string.movie_db_api_key));
-        tvMovieTrailersUrl.setText(urlTrailers.toString());
+
+        //tvMovieTrailersUrl.setText(urlTrailers.toString());
 
         if (urlTrailers != null) {
             //new FetchTrailersTask().execute(urlTrailers);
@@ -121,7 +129,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
                         }).show();
 
                 URL urlTrailers = NetworkUtils.buildUrlTrailers(movie.getId(), getString(R.string.movie_db_api_key));
-                tvMovieTrailersUrl.setText(urlTrailers.toString());
+                //tvMovieTrailersUrl.setText(urlTrailers.toString());
 
                 if (urlTrailers != null) {
                     //new FetchTrailersTask().execute(urlTrailers);
@@ -145,7 +153,57 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
 
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+        Bundle bundleTrailers = new Bundle();
+        bundleTrailers.putString("id_trailer", movie.getId());
+
+        TrailersFragment trailersFragment = new TrailersFragment();
+        trailersFragment.setArguments(bundleTrailers);
+
+        adapter.addFragment(trailersFragment, "Trailers");
+
+
+        adapter.addFragment(new ReviewsFragment(), "Reviews");
+        viewPager.setAdapter(adapter);
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 
     @Override
@@ -174,7 +232,6 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     //Loader
     @Override
@@ -236,8 +293,8 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
 
         Log.d("MovieDetailActivity2", "onLoadFinished: ");
         if (jsonTrailersResult != null && !("").equals(jsonTrailersResult)) {
-            String text = tvMovieTrailersUrl.getText() + "\n\n" + jsonTrailersResult;
-            tvMovieTrailersUrl.setText(text);
+            //String text = tvMovieTrailersUrl.getText() + "\n\n" + jsonTrailersResult;
+            //tvMovieTrailersUrl.setText(text);
         }
     }
 
@@ -245,5 +302,6 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     public void onLoaderReset(Loader<String> loader) {
 
     }
+
 
 }
