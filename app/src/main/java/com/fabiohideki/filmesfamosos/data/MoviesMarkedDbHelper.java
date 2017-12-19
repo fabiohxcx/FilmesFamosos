@@ -23,8 +23,8 @@ public class MoviesMarkedDbHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
 
-    public MoviesMarkedDbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+    public MoviesMarkedDbHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class MoviesMarkedDbHelper extends SQLiteOpenHelper {
 
             movies.add(movie);
         }
-        
+
         return movies;
     }
 

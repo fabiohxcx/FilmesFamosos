@@ -1,5 +1,6 @@
 package com.fabiohideki.filmesfamosos.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -7,6 +8,12 @@ import android.provider.BaseColumns;
  */
 
 public class MoviesMarkedContract {
+
+    public static final String AUTHORITY = "com.fabiohideki.filmesfamosos";
+
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+
+    public static final String PATH_MARKED_MOVIES = "marked_movies";
 
     public static final class MoviesMarkedEntry implements BaseColumns {
 
