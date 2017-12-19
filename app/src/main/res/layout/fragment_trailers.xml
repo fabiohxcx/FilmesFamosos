@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     tools:context="com.fabiohideki.filmesfamosos.TrailersFragment">
 
-    <TextView
-        android:id="@+id/tv_movie_trailers_url"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="trailers" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_trailers"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="horizontal" />
 
 </FrameLayout>

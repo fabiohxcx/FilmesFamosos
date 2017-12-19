@@ -61,7 +61,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         tvMovieID = (TextView) findViewById(R.id.tv_movie_id);
         tvMovieReleaseDate = (TextView) findViewById(R.id.tv_movie_release_date);
         tvMovieOverview = (TextView) findViewById(R.id.tv_movie_overview);
-        //tvMovieTrailersUrl = findViewById(R.id.tv_movie_trailers_url);
+
         rbMovie = (RatingBar) findViewById(R.id.rb_movie);
         ivMoviePosterDetail = (ImageView) findViewById(R.id.poster_image);
         ivMovieToolBarPoster = (ImageView) findViewById(R.id.movie_toolbar_poster);

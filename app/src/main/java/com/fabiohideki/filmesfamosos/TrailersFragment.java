@@ -7,14 +7,22 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.fabiohideki.filmesfamosos.adapters.TrailersAdapter;
+import com.fabiohideki.filmesfamosos.model.ResultTrailers;
 import com.fabiohideki.filmesfamosos.utils.NetworkUtils;
+import com.fabiohideki.filmesfamosos.utils.TrailersJsonUtils;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,7 +33,11 @@ public class TrailersFragment extends Fragment implements LoaderManager.LoaderCa
     private static final int MOVIE_DETAIL_LOADER = 22;
     private Bundle queryBundle = null;
     private String movieID;
-    private TextView textView;
+
+    private static ResultTrailers resultTrailers;
+
+    RecyclerView recyclerView;
+    private TrailersAdapter mAdapter;
 
     public TrailersFragment() {
         // Required empty public constructor
@@ -47,10 +59,6 @@ public class TrailersFragment extends Fragment implements LoaderManager.LoaderCa
         super.onViewCreated(view, savedInstanceState);
 
         movieID = getArguments().getString("id_movie");
-
-        textView = getView().findViewById(R.id.tv_movie_trailers_url);
-
-        textView.append(" id:" + movieID);
 
         getActivity().getSupportLoaderManager().initLoader(MOVIE_DETAIL_LOADER, queryBundle, this);
 
@@ -75,6 +83,7 @@ public class TrailersFragment extends Fragment implements LoaderManager.LoaderCa
             }
 
         }
+
     }
 
     //Loader
@@ -137,7 +146,23 @@ public class TrailersFragment extends Fragment implements LoaderManager.LoaderCa
 
         Log.d("MovieDetailActivity2", "onLoadFinished: ");
         if (jsonTrailersResult != null && !("").equals(jsonTrailersResult)) {
-            textView.append("\n" + jsonTrailersResult);
+
+            try {
+                resultTrailers = TrailersJsonUtils.getResultTrailersFromJson(getContext(), jsonTrailersResult);
+
+                recyclerView = getActivity().findViewById(R.id.rv_trailers);
+                mAdapter = new TrailersAdapter(getContext(), resultTrailers);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(mAdapter);
+                recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+                //mAdapter.notifyDataSetChanged();
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
