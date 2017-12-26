@@ -3,10 +3,12 @@
     <string name="error_message">Check yout internet connection and try again</string>
     <string name="retry">Retry</string>
     <string name="most_popular">Most popular</string>
+    <string name="favorite">Favorite</string>
     <string name="top_rated">Top rated</string>
     <string name="title_activity_movie_detail">Movie Detail</string>
     <string name="undo">Undo</string>
     <string name="mark_favorite">Marked as favorite</string>
+    <string name="unmark_favorite">Unmarked as favorite</string>
     <string name="toolbar_poster_description">Toolbar Poster</string>
     <string name="poster_description">Poster Description</string>
     <string name="placeholder">Placeholder</string>

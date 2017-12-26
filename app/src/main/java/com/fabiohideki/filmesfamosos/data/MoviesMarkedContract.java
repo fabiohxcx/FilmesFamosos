@@ -17,6 +17,9 @@ public class MoviesMarkedContract {
 
     public static final class MoviesMarkedEntry implements BaseColumns {
 
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_MARKED_MOVIES).build();
+
         public static final String TABLE_NAME = "movies";
 
         public static final String COLUMN_ID = "id";

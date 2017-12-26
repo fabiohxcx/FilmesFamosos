@@ -10,4 +10,10 @@
         android:icon="@drawable/fire"
         android:orderInCategory="2"
         android:title="@string/most_popular" />
+    <item
+        android:id="@+id/fab_favorites"
+        android:icon="@drawable/heart_outline"
+        android:orderInCategory="3"
+        android:title="@string/favorite" />
+
 </menu>

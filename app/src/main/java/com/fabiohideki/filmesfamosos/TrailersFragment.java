@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,6 +39,9 @@ public class TrailersFragment extends Fragment implements LoaderManager.LoaderCa
 
     private RecyclerView recyclerView;
     private TrailersAdapter mAdapter;
+
+
+    NestedScrollView nestedScrollView;
 
     public TrailersFragment() {
         // Required empty public constructor
@@ -159,6 +163,8 @@ public class TrailersFragment extends Fragment implements LoaderManager.LoaderCa
                 recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
                 //mAdapter.notifyDataSetChanged();
 
+                nestedScrollView = getActivity().findViewById(R.id.nsv_movie_detail);
+                nestedScrollView.scrollTo(0, 0);
 
             } catch (JSONException e) {
                 e.printStackTrace();

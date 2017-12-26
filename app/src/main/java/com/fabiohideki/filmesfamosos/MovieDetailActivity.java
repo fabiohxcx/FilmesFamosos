@@ -1,6 +1,10 @@
 package com.fabiohideki.filmesfamosos;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,6 +25,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.fabiohideki.filmesfamosos.customClass.WrapContentViewPager;
+import com.fabiohideki.filmesfamosos.data.MoviesMarkedContract;
 import com.fabiohideki.filmesfamosos.model.Movie;
 import com.fabiohideki.filmesfamosos.utils.MovieUrlUtils;
 import com.squareup.picasso.Picasso;
@@ -31,16 +36,16 @@ import java.util.List;
 public class MovieDetailActivity extends AppCompatActivity {
 
 
-    private FloatingActionButton fab;
+    private FloatingActionButton fabFavorite;
     private Movie movie;
     private TextView tvMovieTitle;
     private TextView tvMovieID;
     private TextView tvMovieReleaseDate;
     private TextView tvMovieOverview;
-    private TextView tvMovieTrailersUrl;
     private RatingBar rbMovie;
     private ImageView ivMoviePosterDetail;
     private ImageView ivMovieToolBarPoster;
+    private boolean markedAsFavorite = false;
 
     //tabs
     private TabLayout tabLayout;
@@ -73,25 +78,82 @@ public class MovieDetailActivity extends AppCompatActivity {
         rbMovie.setRating(Float.parseFloat(movie.getVoteAverage()) / 2);
         Picasso.with(this).load(MovieUrlUtils.buildUrlPoster(movie.getPosterPath())).into(ivMoviePosterDetail);
         Picasso.with(this).load(MovieUrlUtils.buildUrlPoster(movie.getBackdropPath())).into(ivMovieToolBarPoster);
+        fabFavorite = (FloatingActionButton) findViewById(R.id.fab_mark);
 
 
-        fab = (FloatingActionButton) findViewById(R.id.fab_mark);
-        fab.setOnClickListener(new View.OnClickListener() {
+        //Check if already marked
+        ContentResolver resolver = getContentResolver();
+        String[] selectionArguments = new String[]{movie.getId()};
+        String selection = MoviesMarkedContract.MoviesMarkedEntry.COLUMN_ID + " = ? ";
+
+        Cursor cursor = resolver.query(MoviesMarkedContract.MoviesMarkedEntry.CONTENT_URI,
+                null, selection, selectionArguments, null);
+
+
+        if (cursor.getCount() >= 1) {
+            //action fabFavorite
+            fabFavorite.setImageDrawable(getResources().getDrawable(R.drawable.bookmark_check));
+            markedAsFavorite = true;
+        }
+
+
+        fabFavorite.setOnClickListener(new View.OnClickListener() {
 
             @SuppressWarnings("deprecation")
             @Override
             public void onClick(View view) {
-                //action fab
-                fab.setImageDrawable(getResources().getDrawable(R.drawable.bookmark_check));
 
-                Snackbar.make(view, getString(R.string.mark_favorite), Snackbar.LENGTH_LONG)
-                        .setAction(getString(R.string.undo), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                //action Undo
-                                fab.setImageDrawable(getResources().getDrawable(R.drawable.bookmark));
-                            }
-                        }).show();
+                if (markedAsFavorite == false) {
+
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_ID, movie.getId());
+                    contentValues.put(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_TITLE, movie.getTitle());
+                    contentValues.put(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
+                    contentValues.put(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
+                    contentValues.put(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_OVERVIEW, movie.getOverview());
+                    contentValues.put(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
+                    contentValues.put(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_BACK_DROP_PATH, movie.getBackdropPath());
+
+                    Uri uri = getContentResolver().insert(MoviesMarkedContract.MoviesMarkedEntry.CONTENT_URI, contentValues);
+
+                    if (uri != null) {
+
+                        Snackbar.make(view, getString(R.string.mark_favorite), Snackbar.LENGTH_LONG)
+                                .setAction(getString(R.string.undo), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        //action Undo
+                                        fabFavorite.performClick();
+                                    }
+                                }).show();
+
+                        markedAsFavorite = true;
+                        fabFavorite.setImageDrawable(getResources().getDrawable(R.drawable.bookmark_check));
+                    }
+                } else {
+
+                    ContentResolver resolver = getContentResolver();
+                    String[] selectionArguments = new String[]{movie.getId()};
+                    String selection = MoviesMarkedContract.MoviesMarkedEntry.COLUMN_ID + " = ? ";
+
+                    int numRowsDeleted = resolver.delete(MoviesMarkedContract.MoviesMarkedEntry.CONTENT_URI, selection, selectionArguments);
+
+                    if (numRowsDeleted > 0) {
+
+                        Snackbar.make(view, getString(R.string.unmark_favorite), Snackbar.LENGTH_LONG)
+                                .setAction(getString(R.string.undo), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        //action Undo
+                                        fabFavorite.performClick();
+                                    }
+                                }).show();
+
+                        fabFavorite.setImageDrawable(getResources().getDrawable(R.drawable.bookmark));
+                        markedAsFavorite = false;
+                    }
+
+                }
 
             }
         });

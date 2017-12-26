@@ -1,6 +1,9 @@
 package com.fabiohideki.filmesfamosos;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -16,19 +19,23 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fabiohideki.filmesfamosos.adapters.GridRecyclerViewAdapter;
 import com.fabiohideki.filmesfamosos.asynctask.FetchMoviesTask;
+import com.fabiohideki.filmesfamosos.data.MoviesMarkedContract;
 import com.fabiohideki.filmesfamosos.listener.HidingScrollListener;
 import com.fabiohideki.filmesfamosos.model.Movie;
 import com.fabiohideki.filmesfamosos.model.ResultMovies;
 import com.fabiohideki.filmesfamosos.utils.NetworkUtils;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 import io.github.kobakei.materialfabspeeddial.FabSpeedDial;
 
 import static com.fabiohideki.filmesfamosos.R.string.app_name;
+import static com.fabiohideki.filmesfamosos.R.string.favorite;
 import static com.fabiohideki.filmesfamosos.R.string.most_popular;
 import static com.fabiohideki.filmesfamosos.R.string.top_rated;
 
@@ -47,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
     private static final String ON_SAVE_INSTANCE_STATE_MOVIES = "onSaveInstanceStateMovies";
     private static final String ON_SAVE_INSTANCE_STATE_RESOURCE = "onSaveInstanceStateResource";
     private static ResultMovies resultMovies;
+
+    private Cursor mData;
+    private ArrayList<String> arrayNames = new ArrayList<>();
 
 
     public static void setResultMovies(ResultMovies resultMoviesParam) {
@@ -89,6 +99,47 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
                     setTitle(getString(most_popular));
                     resourcePath = NetworkUtils.POPULAR;
                     loadMoviesData(resourcePath, null, false);
+                } else if (itemId == R.id.fab_favorites) {
+
+
+                    class TestFetchTask extends AsyncTask<Void, Void, Cursor> {
+
+                        @Override
+                        protected Cursor doInBackground(Void... voids) {
+
+                            ContentResolver resolver = getContentResolver();
+                            Cursor cursor = resolver.query(MoviesMarkedContract.MoviesMarkedEntry.CONTENT_URI,
+                                    null, null, null, null);
+                            return cursor;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Cursor cursor) {
+                            super.onPostExecute(cursor);
+
+                            mData = cursor;
+
+                            if (mData != null) {
+                                while (mData.moveToNext()) {
+                                    arrayNames.add(mData.getString(mData.getColumnIndex(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_TITLE)));
+                                }
+                            }
+
+                            Toast.makeText(MainActivity.this, "names: " + arrayNames.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    new TestFetchTask().execute();
+
+
+                    // MoviesMarkedDbHelper db = new MoviesMarkedDbHelper(MainActivity.this);
+                    // List<Movie> list = db.getAllMoviesMarked();
+
+
+
+                    setTitle(getString(favorite));
+                    resourcePath = NetworkUtils.FAVORITES;
+                    //loadMoviesData(resourcePath, null, false);
                 }
             }
         });

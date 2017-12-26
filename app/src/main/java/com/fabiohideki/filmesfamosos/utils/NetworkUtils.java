@@ -22,6 +22,7 @@ public class NetworkUtils {
     private static final String VIDEOS = "videos";
     private static final String REVIEWS = "reviews";
     public static final String POPULAR = "popular";
+    public static final String FAVORITES = "favorites";
     public static final String TOP_RATED = "top_rated";
 
     private static final String PARAM_API_KEY = "api_key";
