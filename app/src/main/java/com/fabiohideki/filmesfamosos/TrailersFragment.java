@@ -36,7 +36,7 @@ public class TrailersFragment extends Fragment implements LoaderManager.LoaderCa
 
     private static ResultTrailers resultTrailers;
 
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private TrailersAdapter mAdapter;
 
     public TrailersFragment() {

@@ -8,14 +8,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.fabiohideki.filmesfamosos.adapters.ReviewsAdapter;
+import com.fabiohideki.filmesfamosos.model.ResultReviews;
 import com.fabiohideki.filmesfamosos.utils.NetworkUtils;
+import com.fabiohideki.filmesfamosos.utils.ReviewsJsonUtils;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,11 +33,16 @@ import java.net.URL;
 public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCallbacks<String> {
 
     private static final String SEARCH_QUERY_URL_EXTRA = "query";
-    private static final int MOVIE_DETAIL_LOADER = 23;
+    private static final int REVIEW_DETAIL_LOADER = 23;
     private Bundle queryBundle = null;
     private String movieID;
     private TextView textView;
 
+    private static ResultReviews resultReviews;
+
+    private RecyclerView recyclerView;
+
+    private ReviewsAdapter mAdapter;
 
     public ReviewsFragment() {
         // Required empty public constructor
@@ -45,12 +60,9 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
         super.onViewCreated(view, savedInstanceState);
 
         movieID = getArguments().getString("id_movie");
-        textView = getView().findViewById(R.id.text_review);
 
-        textView.append(" id:" + movieID);
+        getActivity().getSupportLoaderManager().initLoader(REVIEW_DETAIL_LOADER, queryBundle, this);
 
-
-        getActivity().getSupportLoaderManager().initLoader(MOVIE_DETAIL_LOADER, queryBundle, this);
 
         URL urlReviews = NetworkUtils.buildUrlReviews(movieID, getString(R.string.movie_db_api_key));
 
@@ -62,12 +74,12 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
 
             LoaderManager loaderManager = getActivity().getSupportLoaderManager();
 
-            Loader<String> trailerLoader = loaderManager.getLoader(MOVIE_DETAIL_LOADER);
+            Loader<String> trailerLoader = loaderManager.getLoader(REVIEW_DETAIL_LOADER);
 
             if (trailerLoader == null) {
-                loaderManager.initLoader(MOVIE_DETAIL_LOADER, queryBundle, this);
+                loaderManager.initLoader(REVIEW_DETAIL_LOADER, queryBundle, this);
             } else {
-                loaderManager.restartLoader(MOVIE_DETAIL_LOADER, queryBundle, this);
+                loaderManager.restartLoader(REVIEW_DETAIL_LOADER, queryBundle, this);
             }
         }
     }
@@ -132,7 +144,22 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
 
         Log.d("MovieDetailActivity2", "onLoadFinished: ");
         if (jsonReviewsResult != null && !("").equals(jsonReviewsResult)) {
-            textView.append("\n" + jsonReviewsResult);
+
+            try {
+                resultReviews = ReviewsJsonUtils.getResultReviewsFromJson(getContext(), jsonReviewsResult);
+                recyclerView = getActivity().findViewById(R.id.rv_reviews);
+                mAdapter = new ReviewsAdapter(getContext(), resultReviews);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(mAdapter);
+                recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(getContext(), "Error: ReviewsJsonUtils.getResultReviewsFromJson", Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 
