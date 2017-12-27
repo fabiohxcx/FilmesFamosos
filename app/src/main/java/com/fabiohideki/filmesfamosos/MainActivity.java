@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
     private ProgressBar progressBar;
     private RecyclerView gridRecyclerView;
     private GridRecyclerViewAdapter gridRecyclerViewAdapter;
+    private GridLayoutManager layoutManager;
 
     //save
     private String resourcePath;
@@ -87,6 +88,22 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
         displayErrorView = (LinearLayout) findViewById(R.id.error_layout);
         progressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
         mFabButton = (FabSpeedDial) findViewById(R.id.fabButton);
+
+
+        layoutManager = new GridLayoutManager(this, numberOfColumns());
+        gridRecyclerView.setLayoutManager(layoutManager);
+        gridRecyclerView.setHasFixedSize(true);
+        gridRecyclerView.setOnScrollListener(new HidingScrollListener() {
+            @Override
+            public void onHide() {
+                hideViews();
+            }
+
+            @Override
+            public void onShow() {
+                showViews();
+            }
+        });
 
         mFabButton.addOnMenuItemClickListener(new FabSpeedDial.OnMenuItemClickListener() {
             @Override
@@ -233,21 +250,6 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
 
     @SuppressWarnings("deprecation")
     public void setGridViewAdapter(ResultMovies resultMovies) {
-        GridLayoutManager layoutManager = new GridLayoutManager(this, numberOfColumns());
-        gridRecyclerView.setLayoutManager(layoutManager);
-        gridRecyclerView.setHasFixedSize(true);
-        gridRecyclerView.setOnScrollListener(new HidingScrollListener() {
-            @Override
-            public void onHide() {
-                hideViews();
-            }
-
-            @Override
-            public void onShow() {
-                showViews();
-            }
-        });
-
         gridRecyclerViewAdapter = new GridRecyclerViewAdapter(this, resultMovies.getMovies());
         gridRecyclerViewAdapter.setClickListener(this);
         gridRecyclerView.setAdapter(gridRecyclerViewAdapter);

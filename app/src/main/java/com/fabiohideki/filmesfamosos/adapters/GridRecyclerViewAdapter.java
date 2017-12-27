@@ -2,7 +2,6 @@ package com.fabiohideki.filmesfamosos.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,7 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<GridRecyclerVi
 
         View view = mInflater.inflate(R.layout.item_grid, parent, shouldAttachToParentImmediately);
 
-        // Calculate ActionBar height
+/*      //Calculate width and height
         int actionBarHeight = 0;
         TypedValue tv = new TypedValue();
         if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
@@ -57,7 +56,7 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<GridRecyclerVi
 
         width = parent.getMeasuredWidth() / nColumns;
 
-        view.setLayoutParams(new RecyclerView.LayoutParams(width, height));
+        view.setLayoutParams(new RecyclerView.LayoutParams(width, height));*/
 
         return new ViewHolder(view);
     }

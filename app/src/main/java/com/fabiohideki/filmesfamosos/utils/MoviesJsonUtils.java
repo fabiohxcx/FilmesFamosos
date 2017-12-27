@@ -1,6 +1,5 @@
 package com.fabiohideki.filmesfamosos.utils;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.fabiohideki.filmesfamosos.model.Movie;
@@ -35,7 +34,7 @@ public class MoviesJsonUtils {
     private static final String VOTE_AVERAGE = "vote_average";
     private static final String BACKDROP_PATH = "backdrop_path";
 
-    public static ResultMovies getResultMovieFromJson(Context context, String jsonMoviesResult) throws JSONException {
+    public static ResultMovies getResultMovieFromJson(String jsonMoviesResult) throws JSONException {
 
         ResultMovies resultMovies = new ResultMovies();
 

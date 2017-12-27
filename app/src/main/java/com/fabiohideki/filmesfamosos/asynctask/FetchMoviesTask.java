@@ -56,7 +56,7 @@ public class FetchMoviesTask extends AsyncTask<URL, Void, ResultMovies> {
 
             if (jsonMoviesResult != null && !("").equals(jsonMoviesResult)) {
                 try {
-                    resultMovies = MoviesJsonUtils.getResultMovieFromJson(activity, jsonMoviesResult);
+                    resultMovies = MoviesJsonUtils.getResultMovieFromJson(jsonMoviesResult);
                     MainActivity.setResultMovies(resultMovies);
                 } catch (JSONException e) {
                     e.printStackTrace();
