@@ -256,6 +256,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         Intent returnIntent = new Intent();
         returnIntent.putExtra("result", Boolean.toString(markedAsFavoriteChanged));
         setResult(Activity.RESULT_OK, returnIntent);
-        finish();
+        supportFinishAfterTransition();
     }
 }
