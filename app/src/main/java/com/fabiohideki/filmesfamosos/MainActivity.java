@@ -1,5 +1,6 @@
 package com.fabiohideki.filmesfamosos;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,7 +20,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fabiohideki.filmesfamosos.adapters.GridRecyclerViewAdapter;
 import com.fabiohideki.filmesfamosos.asynctask.FetchMoviesTask;
@@ -31,6 +31,7 @@ import com.fabiohideki.filmesfamosos.utils.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.github.kobakei.materialfabspeeddial.FabSpeedDial;
 
@@ -43,17 +44,17 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
 
     private Toolbar mToolbar;
     private FabSpeedDial mFabButton;
-
     private LinearLayout displayErrorView;
     private ProgressBar progressBar;
-
     private RecyclerView gridRecyclerView;
+    private GridRecyclerViewAdapter gridRecyclerViewAdapter;
 
-    //salvar
+    //save
     private String resourcePath;
     private static final String ON_SAVE_INSTANCE_STATE_MOVIES = "onSaveInstanceStateMovies";
     private static final String ON_SAVE_INSTANCE_STATE_RESOURCE = "onSaveInstanceStateResource";
     private static ResultMovies resultMovies;
+    public static final int NOTIFY_CHANGE = 100;
 
     private Cursor mData;
     private ArrayList<String> arrayNames = new ArrayList<>();
@@ -99,47 +100,12 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
                     setTitle(getString(most_popular));
                     resourcePath = NetworkUtils.POPULAR;
                     loadMoviesData(resourcePath, null, false);
+
                 } else if (itemId == R.id.fab_favorites) {
-
-
-                    class TestFetchTask extends AsyncTask<Void, Void, Cursor> {
-
-                        @Override
-                        protected Cursor doInBackground(Void... voids) {
-
-                            ContentResolver resolver = getContentResolver();
-                            Cursor cursor = resolver.query(MoviesMarkedContract.MoviesMarkedEntry.CONTENT_URI,
-                                    null, null, null, null);
-                            return cursor;
-                        }
-
-                        @Override
-                        protected void onPostExecute(Cursor cursor) {
-                            super.onPostExecute(cursor);
-
-                            mData = cursor;
-
-                            if (mData != null) {
-                                while (mData.moveToNext()) {
-                                    arrayNames.add(mData.getString(mData.getColumnIndex(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_TITLE)));
-                                }
-                            }
-
-                            Toast.makeText(MainActivity.this, "names: " + arrayNames.toString(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    new TestFetchTask().execute();
-
-
-                    // MoviesMarkedDbHelper db = new MoviesMarkedDbHelper(MainActivity.this);
-                    // List<Movie> list = db.getAllMoviesMarked();
-
-
-
                     setTitle(getString(favorite));
                     resourcePath = NetworkUtils.FAVORITES;
-                    //loadMoviesData(resourcePath, null, false);
+
+                    new MarkedMoviesFetchTask().execute();
                 }
             }
         });
@@ -148,12 +114,16 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
             resultMovies = savedInstanceState.getParcelable(ON_SAVE_INSTANCE_STATE_MOVIES);
             resourcePath = savedInstanceState.getString(ON_SAVE_INSTANCE_STATE_RESOURCE);
 
-            if (resourcePath != null && resourcePath == NetworkUtils.TOP_RATED) {
+            if (NetworkUtils.TOP_RATED.equals(resourcePath)) {
                 setTitle(getString(top_rated));
-            } else if (resourcePath != null && resourcePath == NetworkUtils.POPULAR) {
-                setTitle(getString(most_popular));
-            }
 
+            } else if (NetworkUtils.POPULAR.equals(resourcePath)) {
+                setTitle(getString(most_popular));
+
+            } else if (NetworkUtils.FAVORITES.equals(resourcePath)) {
+                setTitle(getString(favorite));
+
+            }
             loadMoviesData(resourcePath, resultMovies, true);
 
         } else {
@@ -161,8 +131,65 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
             loadMoviesData(resourcePath, null, false);
         }
 
-
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    /*
+    * Fetch Movies Marked
+    * */
+
+    private class MarkedMoviesFetchTask extends AsyncTask<Void, Void, Cursor> {
+
+        @Override
+        protected Cursor doInBackground(Void... voids) {
+
+            ContentResolver resolver = getContentResolver();
+
+            Cursor cursor = resolver.query(
+                    MoviesMarkedContract.MoviesMarkedEntry.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    null);
+
+            return cursor;
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            super.onPostExecute(cursor);
+
+            mData = cursor;
+
+            resultMovies = new ResultMovies();
+            List<Movie> movies = new ArrayList<>();
+
+            if (mData != null) {
+                while (mData.moveToNext()) {
+                    Movie movie = new Movie(
+                            mData.getString(mData.getColumnIndex(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_ID)),
+                            mData.getString(mData.getColumnIndex(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_POSTER_PATH)),
+                            mData.getString(mData.getColumnIndex(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_TITLE)),
+                            mData.getString(mData.getColumnIndex(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_OVERVIEW)),
+                            mData.getString(mData.getColumnIndex(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_VOTE_AVERAGE)),
+                            mData.getString(mData.getColumnIndex(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_RELEASE_DATE)),
+                            mData.getString(mData.getColumnIndex(MoviesMarkedContract.MoviesMarkedEntry.COLUMN_BACK_DROP_PATH))
+                    );
+
+                    movies.add(movie);
+                }
+            }
+
+            resultMovies.setMovies(movies);
+
+            loadMoviesData(resourcePath, resultMovies, false);
+        }
+    }
+
 
     @SuppressWarnings("deprecation")
     private void initToolbar() {
@@ -221,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
             }
         });
 
-        GridRecyclerViewAdapter gridRecyclerViewAdapter = new GridRecyclerViewAdapter(this, resultMovies.getMovies());
+        gridRecyclerViewAdapter = new GridRecyclerViewAdapter(this, resultMovies.getMovies());
         gridRecyclerViewAdapter.setClickListener(this);
         gridRecyclerView.setAdapter(gridRecyclerViewAdapter);
     }
@@ -252,12 +279,28 @@ public class MainActivity extends AppCompatActivity implements GridRecyclerViewA
     }
 
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void onItemPosterClick(View view, Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra(Intent.EXTRA_COMPONENT_NAME, movie);
-        ActivityOptionsCompat options = ActivityOptionsCompat.
-                makeSceneTransitionAnimation(this, view, "poster_transition");
-        startActivity(intent, options.toBundle());
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, "poster_transition");
+        startActivityForResult(intent, NOTIFY_CHANGE, options.toBundle());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == NOTIFY_CHANGE) {
+            if (resultCode == RESULT_OK) {
+                String result = data.getStringExtra("result");
+                if ("true".equals(result)) {
+                    if (NetworkUtils.FAVORITES.equals(resourcePath)) {
+                        new MarkedMoviesFetchTask().execute();
+                        showViews();
+                    }
+
+                }
+            }
+        }
     }
 }

@@ -123,7 +123,7 @@ public class MoviesMarkedContentProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        if (numRowsDeleted != 0) {
+        if (numRowsDeleted > 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
 

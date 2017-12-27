@@ -1,5 +1,6 @@
 package com.fabiohideki.filmesfamosos;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -46,6 +47,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private ImageView ivMoviePosterDetail;
     private ImageView ivMovieToolBarPoster;
     private boolean markedAsFavorite = false;
+    private boolean markedAsFavoriteChanged = false;
 
     //tabs
     private TabLayout tabLayout;
@@ -129,6 +131,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                         markedAsFavorite = true;
                         fabFavorite.setImageDrawable(getResources().getDrawable(R.drawable.bookmark_check));
+                        markedAsFavoriteChanged = true;
+
                     }
                 } else {
 
@@ -151,6 +155,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                         fabFavorite.setImageDrawable(getResources().getDrawable(R.drawable.bookmark));
                         markedAsFavorite = false;
+                        markedAsFavoriteChanged = true;
                     }
 
                 }
@@ -228,6 +233,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("result", Boolean.toString(markedAsFavoriteChanged));
+                setResult(Activity.RESULT_OK, returnIntent);
                 supportFinishAfterTransition();
                 return true;
             case R.id.menu_share:
@@ -241,4 +249,13 @@ public class MovieDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("result", Boolean.toString(markedAsFavoriteChanged));
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
+    }
 }
